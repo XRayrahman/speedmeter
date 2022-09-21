@@ -24,9 +24,9 @@ __version__ = '0.1.2'
 
 _redraw = tuple('pos size min max'.split())
 _redraw_background = tuple('sectors sector_width shadow_color'.split())
-_redraw_full_cadran = tuple(
-    'tick subtick cadran_color display_first '
-    'display_last value_font_size'.split())
+#_redraw_full_cadran = tuple(
+#    'tick subtick cadran_color display_first '
+#    'display_last value_font_size'.split())
 _redraw_label = tuple(
     'label label_radius_ratio label_angle_ratio '
     'label_icon label_icon_scale label_font_size'.split())
@@ -66,7 +66,7 @@ class SpeedMeter(Widget):
     start_angle = NumericProperty(-90, min=-360, max=360)
     end_angle = NumericProperty(135, min=-360, max=360)
 
-    cadran_color = StringProperty('#ffffff')
+   # cadran_color = StringProperty('#ffffff')
 
     label = StringProperty('')
     label_icon = StringProperty('')
@@ -81,7 +81,8 @@ class SpeedMeter(Widget):
     needle_image = StringProperty('needle.png')
 
     sectors = ListProperty()
-    sector_width = NumericProperty(0, min=0)
+    sector_width = NumericProperty(5, min=0)
+    shadow_width = NumericProperty(0, min=0)
     thickness = NumericProperty(1.5, min=0)
 
     shadow_color = StringProperty('')
@@ -108,7 +109,7 @@ class SpeedMeter(Widget):
         for eventList, fn in (
                 (_redraw, self._redraw),
                 (_redraw_background, self._draw_background),
-                (_redraw_full_cadran, self._draw_full_cadran),
+               # (_redraw_full_cadran, self._draw_full_cadran),
                 (_redraw_label, self._draw_label),
                 (_redraw_needle, self._draw_needle),
         ):
@@ -160,20 +161,22 @@ example using fractions of PI."""
             a0 = a1
 
     def _set_shadow_value(self):
+        shw = self.shadow_width
         if not self._shadow:
             return
         a0 = -(self.a * self.min + self.b)
         a1 = -(self.a * self.value + self.b)
-        self._shadow.circle = (self.centerx, self.centery, self.r - 5, a0, a1)
+        self._shadow.circle = (self.centerx, self.centery, self.r - 21.5, a0, a1)
 
     def _draw_shadow(self):
+        shw = self.shadow_width
         self._shadowIG.clear()
         self._shadow = None
         if not self.shadow_color:
             return
         add = self._shadowIG.add
         add(Color(rgba=get_color_from_hex(self.shadow_color)))
-        self._shadow = Line(width=5, cap='none')
+        self._shadow = Line(width=shw, cap='none')
         add(self._shadow)
         self._set_shadow_value()
 
@@ -185,7 +188,7 @@ example using fractions of PI."""
         r = self.r
         theta0 = self.start_angle
         theta1 = self.end_angle
-        add(Color(rgba=get_color_from_hex(self.cadran_color)))
+       # add(Color(rgba=get_color_from_hex(self.cadran_color)))
         if theta0 == theta1:
             add(Line(circle=(centerx, centery, r), width=1.5))
         else:
@@ -324,6 +327,8 @@ example using fractions of PI."""
         needleSize = self.r
         s = needleSize * 2
         add(Color(rgba=get_color_from_hex(self.needle_color)))
+        
+        ## change needle here
         add(Rectangle(
             pos=(self.centerx - needleSize, self.centery - needleSize),
             size=(s, s),
@@ -335,9 +340,9 @@ example using fractions of PI."""
         self._draw_sectors()
         self._draw_shadow()
 
-    def _draw_full_cadran(self, *t):
-        self._draw_outer_cadran()
-        self._draw_values()
+  #  def _draw_full_cadran(self, *t):
+ #       self._draw_outer_cadran()
+#        self._draw_values()
 
     def _redraw(self, *args):
         diameter = min(self.size)
@@ -377,7 +382,7 @@ example using fractions of PI."""
         # Draw
         #
         self._draw_background()
-        self._draw_full_cadran()
+        #self._draw_full_cadran()
         self._draw_label()
         self._draw_needle()
 
