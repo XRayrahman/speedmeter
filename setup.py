@@ -1,10 +1,11 @@
 """See README.md for package documentation."""
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 from glob import glob
 from io import open
 from os import path
+import kivy_garden
 
 from kivy_garden.speedmeter import __version__
 
@@ -34,13 +35,14 @@ setup(
     ],
     keywords='Kivy kivy-garden SpeedMeter',
 
-    packages=['kivy_garden.speedmeter'],
+    packages=find_namespace_packages(include=['kivy_garden.*']),
     install_requires=[],
     extras_require={
         'dev': ['pytest>=2'],
         'travis': ['coveralls'],
     },
     package_data={'kivy_garden.speedmeter': [ 'images/*.png' ]},
+    include_package_data=True,
     data_files=[('share/kivy_garden/speedmeter',
                  glob('demos/*.py') + glob('demos/*.kv') + glob('demos/*.png'))],
     entry_points={},
